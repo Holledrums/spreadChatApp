@@ -35,9 +35,9 @@ async function getMessage() {
     posts.map((x) => {
       githubResult.innerHTML += `
         <div>
-          <h2>${x.from}</h2>
-          <p>${x.message}</p>
-          <button class="delete">X</button>
+          <h2>From: ${x.from}</h2>
+          <p>Message: ${x.message}</p>
+          <button class="delete">Delete</button>
         </div>
         `;
     });
