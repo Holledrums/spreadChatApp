@@ -37,7 +37,7 @@ async function getMessage() {
         <div>
           <h2>${x.from}</h2>
           <p>${x.message}</p>
-          <button>X</button>
+          <button id="delete">X</button>
         </div>
         `;
     });
