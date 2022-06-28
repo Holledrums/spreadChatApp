@@ -28,36 +28,23 @@ async function getMessage() {
   const posts = await response.json();
   console.log(posts);
   // reverse ändert die reihenfolge der angezeigten Nachrichten,
-  posts.reverse();
-  if (posts.length > 1) {
-    const githubResult = document.getElementById("postContainer");
-    githubResult.textContent = "";
-    posts.map((x) => {
-      githubResult.innerHTML += `
-        <div>
-          <h2>${x.from}</h2>
-          <p>${x.message}</p>
-          <button class="delete">X</button>
-        </div>
-        `;
-    });
-  }
 
-  /*.forEach((element) => {
+  posts.reverse().forEach((element) => {
     const post = renderMessage(element.from, element.message, element.id);
     postContainer.appendChild(post);
-  });*/
+  });
 }
 // Automatische Aktualisierung
 //setInterval(getMessage, 1000);
 
 // erzeugt die Nachricht im Div Container
-/*function renderMessage(title, content, id) {
+function renderMessage(title, content, id) {
   const post = document.createElement("div");
   const titleElement = document.createElement("h3");
   const contentElement = document.createElement("p");
   const deleteButton = document.createElement("button");
   deleteButton.textContent = "X";
+  deleteButton.classList.add("delete");
 
   titleElement.textContent = title;
   contentElement.textContent = content;
@@ -66,14 +53,26 @@ async function getMessage() {
 
   deleteButton.addEventListener("click", (e) => {
     e.preventDefault();
+    console.log(e.target);
     deletePost(id);
+    const toDeletedDiv = e.target.closest("div");
+    console.log(toDeletedDiv);
+    toDeletedDiv.remove();
+  });
+  gitHubAvatar("Holledrums").then((data) => {
+    const userName = data.name;
+    const avatarUrl = data.avatar_url;
+
+    const avatar = document.createElement("img");
+    avatar.src = avatarUrl;
+    post.appendChild(avatar);
   });
 
   post.appendChild(titleElement);
   post.appendChild(contentElement);
   post.appendChild(deleteButton);
   return post;
-}*/
+}
 
 getMessage();
 
@@ -119,4 +118,15 @@ async function deletePost(id) {
   const data = await response.json();
 
   console.log("deleted:", data);
+}
+
+async function gitHubAvatar(userData) {
+  const response = await fetch(`https://api.github.com/users/${userData}`, {
+    headers: {
+      Authorization: "",
+    },
+  });
+  const data = await response.json();
+  console.log(data);
+  return data;
 }
