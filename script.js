@@ -28,7 +28,6 @@ async function getMessage() {
   const posts = await response.json();
   console.log(posts);
   // reverse ändert die reihenfolge der angezeigten Nachrichten,
-
   posts.reverse().forEach((element) => {
     const post = renderMessage(element.from, element.message, element.id);
     postContainer.appendChild(post);
