@@ -3,7 +3,7 @@ const titleInput = document.querySelector("#title");
 const msgInput = document.querySelector("#content");
 const postContainer = document.querySelector("#postContainer");
 
-// eingabe User Name vie Prompt wenn im LocalStarge nichts vermerkt ist
+// eingabe User Name via Prompt wenn im LocalStarge nichts vermerkt ist
 let nickName = localStorage.getItem("Benutzer");
 if (!nickName) {
   const nick = prompt("Enter your nick name");
@@ -26,10 +26,11 @@ titleInput.value = nickName;
 async function getMessage() {
   const response = await fetch("https://dci-chat-api.herokuapp.com/messages");
   const posts = await response.json();
+
   console.log(posts);
-  // reverse ändert die reihenfolge der angezeigten Nachrichten,
-  posts.reverse().forEach((element) => {
-    const post = renderMessage(element.from, element.message, element.id);
+
+  const renderPromises = posts.map(async (element) => {
+    const post = await renderMessage(element.from, element.message, element.id);
     postContainer.appendChild(post);
   });
 }
@@ -37,16 +38,25 @@ async function getMessage() {
 //setInterval(getMessage, 1000);
 
 // erzeugt die Nachricht im Div Container
-function renderMessage(title, content, id) {
+async function renderMessage(userName, content, id) {
   const post = document.createElement("div");
   const titleElement = document.createElement("h3");
   const contentElement = document.createElement("p");
   const deleteButton = document.createElement("button");
+  const avatar = document.createElement("img");
+
+  // Delete Button + class
+
   deleteButton.textContent = "X";
   deleteButton.classList.add("delete");
 
-  titleElement.textContent = title;
+  titleElement.textContent = userName;
   contentElement.textContent = content;
+
+  const response = await fetch(`https://api.github.com/users/${userName}`);
+  const userData = await response.json();
+
+  avatar.src = userData.avatar_url;
 
   post.id = "post" + id;
 
@@ -58,15 +68,8 @@ function renderMessage(title, content, id) {
     console.log(toDeletedDiv);
     toDeletedDiv.remove();
   });
-  gitHubAvatar("Holledrums").then((data) => {
-    const userName = data.name;
-    const avatarUrl = data.avatar_url;
 
-    const avatar = document.createElement("img");
-    avatar.src = avatarUrl;
-    post.appendChild(avatar);
-  });
-
+  post.appendChild(avatar);
   post.appendChild(titleElement);
   post.appendChild(contentElement);
   post.appendChild(deleteButton);
@@ -117,15 +120,4 @@ async function deletePost(id) {
   const data = await response.json();
 
   console.log("deleted:", data);
-}
-
-async function gitHubAvatar(userData) {
-  const response = await fetch(`https://api.github.com/users/${userData}`, {
-    headers: {
-      Authorization: "",
-    },
-  });
-  const data = await response.json();
-  console.log(data);
-  return data;
 }
