@@ -33,11 +33,6 @@ async function getMessage() {
     const post = await renderMessage(element.from, element.message, element.id);
     postContainer.appendChild(post);
   });
-  // reverse ändert die reihenfolge der angezeigten Nachrichten,
-  // posts.reverse().forEach((element) => {
-  //   const post = renderMessage(element.from, element.message, element.id);
-  //   postContainer.appendChild(post);
-  // });
 }
 // Automatische Aktualisierung
 //setInterval(getMessage, 1000);
